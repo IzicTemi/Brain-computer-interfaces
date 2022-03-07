@@ -31,23 +31,26 @@ FFT_PARAMS = {
     'resolution': 0.2930,
     'start_frequency': 3.0,
     'end_frequency': 35.0,
-    'sampling_rate': 256
+    'sampling_rate': 250
 }
 
 all_acc = np.zeros((10, 1))
 
-for subject in range(0, 10):
+for subject in range(1, 10):
 
     dataset = sio.loadmat(f'data/s{subject+1}.mat')
     eeg = np.array(dataset['eeg'], dtype='float32')
-    
+    eeg = eeg[:,:,0,:,:]
+    eeg = np.squeeze(eeg)
+    eeg = np.transpose(eeg, (3, 0, 1, 2))
+      
     CNN_PARAMS['num_classes'] = eeg.shape[0]
     CNN_PARAMS['n_ch'] = eeg.shape[1]
     total_trial_len = eeg.shape[2]
     num_trials = eeg.shape[3]
-    sample_rate = 256
+    sample_rate = 250
 
-    filtered_data = su.get_filtered_eeg(eeg, 6, 80, 4, sample_rate)
+    filtered_data = su.get_filtered_eeg(eeg, 7.25, 90, 4, sample_rate)
     eeg = []
 
     window_len = 1 
